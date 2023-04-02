@@ -20,17 +20,17 @@ class RepoMirror:
     
     def read_git_list(self):
         ''' read chromium git list from file '''
-        f = file('chromium_git_list.txt')
+        f = open('chromium_git_list.txt','r').readlines()
         for line in f:
             self.chromium_git_list.append(line.strip())
-        print self.chromium_git_list
+        print(self.chromium_git_list)
     
     def check_if_git(self, local_git_folder):
         try:
             os.chdir(local_git_folder)
             subprocess.check_output(["git", "remote", "-v"])
-        except Exception, error:
-            print error
+        except Exception as error:
+            print('error', error)
             return False
         
         return True
@@ -46,7 +46,7 @@ class RepoMirror:
                 os.makedirs(git_parent_folder)
             
             if (self.check_if_git(git_folder)):
-                print "fetch from google remote repository %s" % google_git
+                print("fetch from google remote repository %s" % google_git)
                 subprocess.call(["git", "fetch"])
             else:
                 os.chdir(git_parent_folder)
@@ -63,7 +63,7 @@ def main(orig_args):
     (options, args) = parser.parse_args(orig_args)
     google_repo_root = 'https://chromium.googlesource.com/'
     local_repo_root = options.reference
-    print "local chromium's repository: %s" % local_repo_root
+    print("local chromium's repository: %s" % local_repo_root)
     mirror = RepoMirror(google_repo_root, local_repo_root)
     mirror.mirror_chromium_repository()
 
